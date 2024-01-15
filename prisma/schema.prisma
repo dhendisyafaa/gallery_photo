@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(uuid())
+  fullname String
+  username String    @unique
+  password String
+  email    String
+  // address  String
+  album    Album[]
+  image    Image[]
+  comment  Comment[]
+  like     Like[]
+}
+
+model Album {
+  id          Int      @id @default(autoincrement())
+  album_name  String
+  description String
+  created_at  DateTime @default(now())
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  image       Image[]
+}
+
+model Image {
+  id                Int       @id @default(autoincrement())
+  image_name        String
+  image_description String
+  upload_date       DateTime  @default(now())
+  image_url         String
+  album_id          Int
+  album             Album     @relation(fields: [album_id], references: [id])
+  user_id           String
+  user              User      @relation(fields: [user_id], references: [id])
+  comment           Comment[]
+  like              Like[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  comment    String
+  image_id   Int
+  image      Image    @relation(fields: [image_id], references: [id])
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+}
+
+model Like {
+  id         Int      @id @default(autoincrement())
+  image_id   Int
+  image      Image    @relation(fields: [image_id], references: [id])
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+}
