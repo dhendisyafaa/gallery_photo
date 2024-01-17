@@ -5,12 +5,13 @@ import {
   getUserById,
   updateUser,
 } from "../controllers/user.controller.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
-const router = Router();
+const userRouter = Router();
 
-router.get("/user", getAllUsers);
-router.get("/user/:id", getUserById);
-router.patch("/user/:id", updateUser);
-router.delete("/user/:id", deleteUserById);
+userRouter.get("/user", getAllUsers);
+userRouter.get("/user/:id", getUserById);
+userRouter.patch("/user/:id", authenticate, updateUser);
+userRouter.delete("/user/:id", authenticate, deleteUserById);
 
-export default router;
+export default userRouter;
