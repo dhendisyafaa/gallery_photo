@@ -2,13 +2,15 @@ import { Router } from "express";
 import {
   createLike,
   deleteLikeById,
-  getAllLikes,
+  getLikeByImageId,
 } from "../controllers/like.controller.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
-const router = Router();
+const likeRouter = Router();
 
-router.get("/like", getAllLikes);
-router.post("/like", createLike);
-router.delete("/like/:id", deleteLikeById);
+// likeRouter.get("/like", authenticate, getAllLikes);
+likeRouter.get("/like/:id", authenticate, getLikeByImageId);
+likeRouter.post("/like", authenticate, createLike);
+likeRouter.delete("/like/:id", authenticate, deleteLikeById);
 
-export default router;
+export default likeRouter;

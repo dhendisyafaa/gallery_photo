@@ -1,17 +1,41 @@
 import {
   findAllImages,
   findImageById,
+  findTrendingImages,
+  findTrendingImagesByAlbum,
   insertImage,
   removeImage,
   updateImageData,
 } from "../services/image.service.js";
+import { responseError, responseSuccess } from "../utils/response.js";
 
 export const getAllImages = async (req, res) => {
   try {
     const images = await findAllImages();
-    res.status(200).json({ success: true, data: images });
+    responseSuccess(res, 200, "successfully get image data", images);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get image", error);
+  }
+};
+
+export const getTrendingImages = async (req, res) => {
+  try {
+    const images = await findTrendingImages();
+    responseSuccess(res, 200, "successfully get image data", images);
+  } catch (error) {
+    console.log("🚀 ~ getTrendingImages ~ error:", error);
+    responseError(res, 400, "failed to get image", error);
+  }
+};
+
+export const getTrendingImagesByAlbum = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const images = await findTrendingImagesByAlbum(parseInt(id));
+    responseSuccess(res, 200, "successfully get image data", images);
+  } catch (error) {
+    console.log("🚀 ~ getTrendingImages ~ error:", error);
+    responseError(res, 400, "failed to get image", error);
   }
 };
 
@@ -19,29 +43,30 @@ export const getImageById = async (req, res) => {
   try {
     const { id } = req.params;
     const image = await findImageById(parseInt(id));
-    res.status(200).json({ success: true, data: image });
+    if (!image) {
+      return res.status(404).json({
+        error: "data not found",
+        message: `image with id ${id} not found`,
+        data: null,
+      });
+    }
+    responseSuccess(res, 200, "successfully get image data", image);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get image", error);
   }
 };
 
 export const uploadImage = async (req, res) => {
   try {
-    const { image_name, image_description, image_url, album_id, user_id } =
-      req.body;
-
     const dataImage = {
-      image_name,
-      image_description,
-      image_url,
-      album_id: parseInt(album_id),
-      user_id,
+      body: req.body,
+      file: req.file,
     };
 
     await insertImage(dataImage);
-    res.status(200).json({ success: true, message: "Image created!" });
+    responseSuccess(res, 201, "successfully post image data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to post image", error);
   }
 };
 
@@ -50,24 +75,40 @@ export const updateImage = async (req, res) => {
     const { id } = req.params;
     const { image_description, album_id, user_id } = req.body;
 
+    const checkImage = await findImageById(parseInt(id));
+    if (!checkImage) {
+      return res.status(404).json({
+        message: `image with id ${id} not found`,
+        data: null,
+      });
+    }
+
     const dataImage = {
       image_description,
       album_id: parseInt(album_id),
       user_id,
     };
+
     const image = await updateImageData(parseInt(id), dataImage);
-    res.status(200).json({ success: true, data: image });
+    responseSuccess(res, 200, "successfully update image data", image);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to update image", error);
   }
 };
 
 export const deleteImageById = async (req, res) => {
   try {
     const { id } = req.params;
+    const image = await findImageById(parseInt(id));
+    if (!image) {
+      return res.status(404).json({
+        message: `image with id ${id} not found`,
+        data: null,
+      });
+    }
     await removeImage(parseInt(id));
-    res.status(200).json({ success: true, message: "Image deleted!" });
+    responseSuccess(res, 200, "successfully delete image data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to delete image", error);
   }
 };

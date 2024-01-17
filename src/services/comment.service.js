@@ -4,6 +4,16 @@ export const findAllComments = async () => {
   return await prisma.comment.findMany();
 };
 
+export const findCommentByImageId = async (id) => {
+  return await prisma.comment.findMany({
+    where: {
+      image: {
+        id,
+      },
+    },
+  });
+};
+
 export const findCommentById = async (id) => {
   return await prisma.comment.findUnique({
     where: {

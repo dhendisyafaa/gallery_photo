@@ -3,16 +3,17 @@ import {
   createComment,
   deleteCommentById,
   getAllComments,
-  getCommentById,
+  getCommentByImageId,
   updateComment,
 } from "../controllers/comment.controller.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
-const router = Router();
+const commentRouter = Router();
 
-router.get("/comment", getAllComments);
-router.get("/comment/:id", getCommentById);
-router.post("/comment", createComment);
-router.patch("/comment/:id", updateComment);
-router.delete("/comment/:id", deleteCommentById);
+commentRouter.get("/comment", authenticate, getAllComments);
+commentRouter.get("/comment/:id", getCommentByImageId);
+commentRouter.post("/comment", authenticate, createComment);
+commentRouter.patch("/comment/:id", authenticate, updateComment);
+commentRouter.delete("/comment/:id", authenticate, deleteCommentById);
 
-export default router;
+export default commentRouter;

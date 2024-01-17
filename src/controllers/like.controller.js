@@ -1,11 +1,22 @@
-import { findAllLikes, insertLike } from "../services/like.service.js";
+import { findLikeByImage, insertLike } from "../services/like.service.js";
+import { responseError, responseSuccess } from "../utils/response.js";
 
-export const getAllLikes = async (req, res) => {
+// export const getAllLikes = async (req, res) => {
+//   try {
+//     const likes = await findAllLikes();
+//     responseSuccess(res, 200, "successfully get like data", likes);
+//   } catch (error) {
+//     responseError(res, 400, "failed to get like", error);
+//   }
+// };
+
+export const getLikeByImageId = async (req, res) => {
   try {
-    const likes = await findAllLikes();
-    res.status(200).json({ success: true, data: likes });
+    const { id } = req.params;
+    const likes = await findLikeByImage(parseInt(id));
+    responseSuccess(res, 200, "successfully get like data", likes);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get like", error);
   }
 };
 
@@ -19,9 +30,9 @@ export const createLike = async (req, res) => {
     };
 
     await insertLike(dataLike);
-    res.status(200).json({ success: true, message: "Like created!" });
+    responseSuccess(res, 201, "successfully create like data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to create like", error);
   }
 };
 
@@ -29,8 +40,8 @@ export const deleteLikeById = async (req, res) => {
   try {
     const { id } = req.params;
     await removeLike(parseInt(id));
-    res.status(200).json({ success: true, message: "Like deleted!" });
+    responseSuccess(res, 200, "successfully delete like data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to delete like", error);
   }
 };
