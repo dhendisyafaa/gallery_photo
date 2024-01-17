@@ -5,13 +5,14 @@ import {
   removeAlbum,
   updateAlbumData,
 } from "../services/album.service.js";
+import { responseError, responseSuccess } from "../utils/response.js";
 
 export const getAllAlbums = async (req, res) => {
   try {
     const albums = await findAllAlbums();
-    res.status(200).json({ success: true, data: albums });
+    responseSuccess(res, 200, "successfully get album data", albums);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get album", error);
   }
 };
 
@@ -19,37 +20,58 @@ export const getAlbumById = async (req, res) => {
   try {
     const { id } = req.params;
     const album = await findAlbumById(parseInt(id));
-    res.status(200).json({ success: true, data: album });
+    if (!album) {
+      return res.status(404).json({
+        error: "data not found",
+        message: `album with id ${id} not found`,
+        data: null,
+      });
+    }
+    responseSuccess(res, 200, "successfully get album data", album);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get album", error);
   }
 };
 
 export const createAlbum = async (req, res) => {
   try {
     await insertAlbum(req.body);
-    res.status(200).json({ success: true, message: "Album created!" });
+    responseSuccess(res, 201, "successfully create album data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to create album", error);
   }
 };
 
 export const updateAlbum = async (req, res) => {
   try {
     const { id } = req.params;
+    const checkAlbum = await findAlbumById(parseInt(id));
+    if (!checkAlbum) {
+      return res.status(404).json({
+        message: `album with id ${id} not found`,
+        data: null,
+      });
+    }
     const album = await updateAlbumData(parseInt(id), req.body);
-    res.status(200).json({ success: true, data: album });
+    responseSuccess(res, 200, "successfully update album data", album);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to update album", error);
   }
 };
 
 export const deleteAlbumById = async (req, res) => {
   try {
     const { id } = req.params;
+    const album = await findAlbumById(parseInt(id));
+    if (!album) {
+      return res.status(404).json({
+        message: `album with id ${id} not found`,
+        data: null,
+      });
+    }
     await removeAlbum(parseInt(id));
-    res.status(200).json({ success: true, message: "Album deleted!" });
+    responseSuccess(res, 200, "successfully delete album data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to delete album", error);
   }
 };

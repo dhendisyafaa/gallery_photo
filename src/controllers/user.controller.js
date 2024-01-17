@@ -4,13 +4,14 @@ import {
   removeUser,
   updateUserData,
 } from "../services/user.service.js";
+import { responseError, responseSuccess } from "../utils/response.js";
 
 export const getAllUsers = async (req, res) => {
   try {
     const users = await findAllUsers();
-    res.status(200).json({ success: true, data: users });
+    responseSuccess(res, 200, "successfully get user data", users);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get user", error);
   }
 };
 
@@ -18,28 +19,50 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await findUserById(id);
-    res.status(200).json({ success: true, data: user });
+    if (!user) {
+      return res.status(404).json({
+        error: "data not found",
+        message: `user with id ${id} not found`,
+        data: null,
+      });
+    }
+    responseSuccess(res, 200, "successfully get user data", user);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to get user", error);
   }
 };
 
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const checkUser = await findUserById(id);
+    if (!checkUser) {
+      return res.status(404).json({
+        message: `user with id ${id} not found`,
+        data: null,
+      });
+    }
+
     const user = await updateUserData(id, req.body);
-    res.status(200).json({ success: true, data: user });
+    responseSuccess(res, 200, "successfully update user data", user);
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to update user", error);
   }
 };
 
 export const deleteUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await removeUser(id);
-    res.status(200).json({ success: true, data: user });
+    const checkUser = await findUserById(id);
+    if (!checkUser) {
+      return res.status(404).json({
+        message: `user with id ${id} not found`,
+        data: null,
+      });
+    }
+    await removeUser(id);
+    responseSuccess(res, 200, "successfully delete user data");
   } catch (error) {
-    res.status(400).send(error.message);
+    responseError(res, 400, "failed to delete user", error);
   }
 };
