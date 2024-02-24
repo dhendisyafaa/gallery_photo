@@ -6,7 +6,7 @@ export const authenticate = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       error: "Unauthorized",
-      message: "Verifikasi token failed",
+      message: "No tokens delivered",
       data: null,
     });
   }
@@ -14,7 +14,7 @@ export const authenticate = (req, res, next) => {
   if (!user) {
     return res.status(401).json({
       error: "Token not valid",
-      message: "Verifikasi token failed",
+      message: "Verify token failed",
       data: null,
     });
   }

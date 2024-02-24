@@ -19,8 +19,9 @@ export const getAllComments = async (req, res) => {
 
 export const getCommentByImageId = async (req, res) => {
   try {
+    // FIX get data image by id before get comment by id image
     const { id } = req.params;
-    const comments = await findCommentByImageId(parseInt(id));
+    const comments = await findCommentByImageId(parseInt(id), req.query);
     responseSuccess(res, 200, "successfully get comment data", comments);
   } catch (error) {
     console.log("🚀 ~ getCommentByImageId ~ error:", error);
@@ -28,21 +29,21 @@ export const getCommentByImageId = async (req, res) => {
   }
 };
 
-// export const getCommentById = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const comment = await findCommentById(parseInt(id));
-//     if (!comment) {
-//       return res.status(404).json({
-//         message: `comment with id ${id} not found`,
-//         data: null,
-//       });
-//     }
-//     responseSuccess(res, 200, "successfully get comment data", comment);
-//   } catch (error) {
-//     responseError(res, 400, "failed to get comment", error);
-//   }
-// };
+export const getCommentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const comment = await findCommentById(parseInt(id));
+    if (!comment) {
+      return res.status(404).json({
+        message: `comment with id ${id} not found`,
+        data: null,
+      });
+    }
+    responseSuccess(res, 200, "successfully get comment data", comment);
+  } catch (error) {
+    responseError(res, 400, "failed to get comment", error);
+  }
+};
 
 export const createComment = async (req, res) => {
   try {
@@ -62,6 +63,7 @@ export const createComment = async (req, res) => {
       comment_content
     );
   } catch (error) {
+    console.log("🚀 ~ createComment ~ error:", error);
     responseError(res, 400, "failed to create comment", error);
   }
 };

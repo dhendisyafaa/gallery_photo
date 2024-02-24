@@ -3,14 +3,20 @@ import {
   createAlbum,
   deleteAlbumById,
   getAlbumById,
-  getAllAlbums,
+  getAlbumByUser,
+  getAlbumsBySearch,
+  getAllOfficialAlbums,
+  getAllUserAlbums,
   updateAlbum,
 } from "../controllers/album.controller.js";
 import { authenticate } from "../middlewares/authenticate.js";
 
 const albumRouter = Router();
 
-albumRouter.get("/album", getAllAlbums);
+albumRouter.get("/album", getAllUserAlbums);
+albumRouter.get("/album/search", getAlbumsBySearch);
+albumRouter.get("/official-album", getAllOfficialAlbums);
+albumRouter.get("/album/user", getAlbumByUser);
 albumRouter.get("/album/:id", getAlbumById);
 albumRouter.post("/album", authenticate, createAlbum);
 albumRouter.patch("/album/:id", authenticate, updateAlbum);

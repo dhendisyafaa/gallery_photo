@@ -1,8 +1,13 @@
 import { Router } from "express";
 import {
+  addImageToAlbum,
   deleteImageById,
+  deleteImageInAlbum,
   getAllImages,
   getImageById,
+  getImageByUser,
+  getImagesByAlbum,
+  getImagesBySearch,
   getTrendingImages,
   getTrendingImagesByAlbum,
   updateImage,
@@ -12,12 +17,17 @@ import { authenticate } from "../middlewares/authenticate.js";
 
 const imageRouter = Router();
 
-imageRouter.get("/image", getAllImages);
+imageRouter.get("/image/", getAllImages);
+imageRouter.get("/image/user", getImageByUser);
+imageRouter.get("/image/search", getImagesBySearch);
+imageRouter.get("/image/album/:id", getImagesByAlbum);
 imageRouter.get("/image/trending", getTrendingImages);
 imageRouter.get("/image/trending/:id", getTrendingImagesByAlbum);
-imageRouter.get("/image/:id", authenticate, getImageById);
+imageRouter.get("/image/:id", getImageById);
+imageRouter.post("/image-album", authenticate, addImageToAlbum);
 imageRouter.post("/image", authenticate, uploadImage);
 imageRouter.patch("/image/:id", authenticate, updateImage);
+imageRouter.delete("/image-album", authenticate, deleteImageInAlbum);
 imageRouter.delete("/image/:id", authenticate, deleteImageById);
 
 export default imageRouter;

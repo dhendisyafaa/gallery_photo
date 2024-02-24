@@ -1,4 +1,9 @@
-import { findLikeByImage, insertLike } from "../services/like.service.js";
+import {
+  findLikeByImage,
+  findLikeByUser,
+  insertLike,
+  removeLike,
+} from "../services/like.service.js";
 import { responseError, responseSuccess } from "../utils/response.js";
 
 // export const getAllLikes = async (req, res) => {
@@ -9,6 +14,22 @@ import { responseError, responseSuccess } from "../utils/response.js";
 //     responseError(res, 400, "failed to get like", error);
 //   }
 // };
+
+export const getLikeByUser = async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const likes = await findLikeByUser(user_id);
+    responseSuccess(
+      res,
+      200,
+      `successfully get like user ${user_id} data`,
+      likes
+    );
+  } catch (error) {
+    console.log("🚀 ~ getLikeByUser ~ error:", error);
+    responseError(res, 400, "failed to get like", error);
+  }
+};
 
 export const getLikeByImageId = async (req, res) => {
   try {
@@ -32,6 +53,7 @@ export const createLike = async (req, res) => {
     await insertLike(dataLike);
     responseSuccess(res, 201, "successfully create like data");
   } catch (error) {
+    console.log("🚀 ~ createLike ~ error:", error);
     responseError(res, 400, "failed to create like", error);
   }
 };

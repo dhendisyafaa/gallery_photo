@@ -10,7 +10,7 @@ import { responseError, responseSuccess } from "../utils/response.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const { fullname, username, password, email } = req.body;
+    const { username, password } = req.body;
 
     const checkUsername = await checkingUsername(username);
     if (checkUsername)
@@ -19,10 +19,8 @@ export const registerUser = async (req, res) => {
     const hash = encript(password);
 
     const dataUser = {
-      fullname,
-      username,
+      ...req.body,
       password: hash,
-      email,
     };
 
     const user = await register(dataUser);
@@ -50,15 +48,53 @@ export const loginUser = async (req, res) => {
         data: null,
       });
     }
-    const acessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+
+    const payload = {
+      id: user.id,
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      avatar: user.avatar,
+      role: user.role,
+    };
+
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
     const data = {
-      ...user,
-      acessToken,
+      accessToken,
       refreshToken,
     };
     responseSuccess(res, 200, "successfully login", data);
   } catch (error) {
+    console.log("🚀 ~ loginUser ~ error:", error);
+    responseError(res, 400, "failed login", error);
+  }
+};
+
+export const loginWithGoogle = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await login(email);
+    if (!user) {
+      return res.status(404).json({
+        error: "user not found",
+        message: "email not found",
+        data: null,
+      });
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    const data = {
+      id: user.id,
+      accessToken,
+      refreshToken,
+    };
+
+    responseSuccess(res, 200, "successfully login", data);
+  } catch (error) {
+    console.log("🚀 ~ loginUser ~ error:", error);
     responseError(res, 400, "failed login", error);
   }
 };
@@ -91,11 +127,11 @@ export const refreshToken = async (req, res) => {
         data: null,
       });
     }
-    const acessToken = generateAccessToken(user);
+    const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
     const data = {
-      ...user,
-      acessToken,
+      // ...user,
+      accessToken,
       refreshToken,
     };
     responseSuccess(res, 200, "successfully get refresh token", data);

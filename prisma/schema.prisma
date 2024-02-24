@@ -11,61 +11,130 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  fullname String
-  username String    @unique
-  password String
-  email    String
+  id            String    @id @unique @default(uuid())
+  fullname      String
+  username      String    @unique
+  password      String
+  email         String
+  avatar        String?
+  cloudinary_id String?
+  bio           String?
+  links         String[]
+  albums        Album[]
+  images        Image[]
+  comments      Comment[]
+  likes         Like[]
+  role          Role      @default(USER)
   // address  String
-  album    Album[]
-  image    Image[]
-  comment  Comment[]
-  like     Like[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Album {
-  id          Int      @id @default(autoincrement())
-  album_name  String
-  description String
-  created_at  DateTime @default(now())
-  owner_id    String
-  owner       User     @relation(fields: [owner_id], references: [id], onDelete: Cascade)
-  image       Image[]
-  updated_at  DateTime @updatedAt
+  // Unique constraint failed on the fields: (`id`)
+  id            Int              @id @unique @default(autoincrement())
+  album_name    String
+  description   String?
+  album_cover   String?
+  cloudinary_id String?
+  tags          String[]
+  created_at    DateTime         @default(now())
+  owner_id      String
+  owner         User             @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  updated_at    DateTime         @default(now()) @updatedAt
+  images        ImagesOnAlbums[]
 }
 
 model Image {
-  id                Int       @id @default(autoincrement())
+  id                Int              @id @default(autoincrement())
   cloudinary_id     String
   image_url         String
+  image_title       String
   image_name        String
   image_description String?
-  upload_date       DateTime  @default(now())
-  album_id          Int
-  album             Album     @relation(fields: [album_id], references: [id])
+  width             Int
+  height            Int
+  format            String
+  resource_type     String
+  created_at        String
+  tags              String[]
+  bytes             Int
+  folder            String
+  original_filename String
+  albums            ImagesOnAlbums[]
   owner_id          String
-  owner             User      @relation(fields: [owner_id], references: [id])
-  comment           Comment[]
-  like              Like[]
-  updated_at        DateTime  @updatedAt
+  owner             User             @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  comments          Comment[]
+  likes             Like[]
+  updated_at        DateTime         @default(now()) @updatedAt
+  // location_file String
+}
+
+model ImagesOnAlbums {
+  id         Int      @default(autoincrement())
+  album      Album    @relation(fields: [album_id], references: [id], onDelete: Cascade)
+  album_id   Int
+  image      Image    @relation(fields: [image_id], references: [id], onDelete: Cascade)
+  image_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@id([album_id, image_id])
 }
 
 model Comment {
   id              Int      @id @default(autoincrement())
   comment_content String
   image_id        Int
-  image           Image    @relation(fields: [image_id], references: [id])
+  image           Image    @relation(fields: [image_id], references: [id], onDelete: Cascade)
   user_id         String
-  user            User     @relation(fields: [user_id], references: [id])
+  user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  updated_at      DateTime @default(now()) @updatedAt
 }
 
 model Like {
   id         Int      @id @default(autoincrement())
   image_id   Int
-  image      Image    @relation(fields: [image_id], references: [id])
+  image      Image    @relation(fields: [image_id], references: [id], onDelete: Cascade)
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
+}
+
+model ReportIssue {
+  id             Int             @id @unique @default(autoincrement())
+  user_id        String
+  content_id     String
+  content_type   ContentType
+  issue          String[]
+  report_message String
+  status_report  StatusReport    @default(pending)
+  response       ResponseReport?
+  created_at     DateTime        @default(now())
+}
+
+enum ContentType {
+  user
+  image
+  album
+  comment
+}
+
+model ResponseReport {
+  id               Int         @id @default(autoincrement())
+  admin_id         String
+  response_message String
+  report_id        Int         @unique
+  report           ReportIssue @relation(fields: [report_id], references: [id], onDelete: Cascade)
+  created_at       DateTime    @default(now())
+}
+
+enum StatusReport {
+  pending
+  closed
+  deleted
 }
