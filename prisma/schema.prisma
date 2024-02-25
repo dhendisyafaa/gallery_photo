@@ -25,6 +25,7 @@ model User {
   comments      Comment[]
   likes         Like[]
   role          Role      @default(USER)
+  created_at    DateTime  @default(now())
   // address  String
 }
 

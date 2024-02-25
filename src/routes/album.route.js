@@ -5,6 +5,7 @@ import {
   getAlbumById,
   getAlbumByUser,
   getAlbumsBySearch,
+  getAlbumsLength,
   getAllOfficialAlbums,
   getAllUserAlbums,
   updateAlbum,
@@ -13,6 +14,7 @@ import { authenticate } from "../middlewares/authenticate.js";
 
 const albumRouter = Router();
 
+albumRouter.get("/albums-length", authenticate, getAlbumsLength);
 albumRouter.get("/album", getAllUserAlbums);
 albumRouter.get("/album/search", getAlbumsBySearch);
 albumRouter.get("/official-album", getAllOfficialAlbums);

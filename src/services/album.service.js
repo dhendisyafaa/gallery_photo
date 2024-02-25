@@ -1,6 +1,10 @@
 import prisma from "../db/db.js";
 import { uploadImageToCloudinary } from "./image.service.js";
 
+export const findAlbumsLength = async () => {
+  return await prisma.album.count();
+};
+
 export const findAllUserAlbums = async () => {
   return await prisma.album.findMany({
     where: {

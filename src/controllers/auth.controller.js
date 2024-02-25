@@ -26,6 +26,7 @@ export const registerUser = async (req, res) => {
     const user = await register(dataUser);
     responseSuccess(res, 200, "successfully register a user account", user);
   } catch (error) {
+    console.log("🚀 ~ registerUser ~ error:", error);
     responseError(res, 400, "failed to register a user account", error);
   }
 };
@@ -34,6 +35,7 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await login(email);
+
     if (!user) {
       return res.status(404).json({
         error: "user not found",
@@ -41,6 +43,7 @@ export const loginUser = async (req, res) => {
         data: null,
       });
     }
+
     if (!compare(password, user.password)) {
       return res.status(400).json({
         error: "wrong password",
@@ -54,7 +57,6 @@ export const loginUser = async (req, res) => {
       fullname: user.fullname,
       username: user.username,
       email: user.email,
-      avatar: user.avatar,
       role: user.role,
     };
 
@@ -87,7 +89,6 @@ export const loginWithGoogle = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
 
     const data = {
-      id: user.id,
       accessToken,
       refreshToken,
     };

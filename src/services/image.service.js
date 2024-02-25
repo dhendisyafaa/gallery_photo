@@ -1,6 +1,10 @@
 import cloudinary from "../configs/cloudinary.js";
 import prisma from "../db/db.js";
 
+export const findImagesLength = async () => {
+  return await prisma.image.count();
+};
+
 export const findAllImages = async (filter) => {
   const filterObj = {
     trending: {

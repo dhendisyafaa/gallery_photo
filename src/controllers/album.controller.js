@@ -2,6 +2,7 @@ import {
   findAlbumById,
   findAlbumByUser,
   findAlbumsBySearch,
+  findAlbumsLength,
   findAllOfficialAlbums,
   findAllUserAlbums,
   insertAlbum,
@@ -9,6 +10,15 @@ import {
   updateAlbumData,
 } from "../services/album.service.js";
 import { responseError, responseSuccess } from "../utils/response.js";
+
+export const getAlbumsLength = async (req, res) => {
+  try {
+    const albums = await findAlbumsLength();
+    responseSuccess(res, 200, "successfully get album length data", albums);
+  } catch (error) {
+    responseError(res, 400, "failed to get album length", error);
+  }
+};
 
 export const getAllUserAlbums = async (req, res) => {
   try {
