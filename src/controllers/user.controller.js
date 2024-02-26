@@ -1,12 +1,13 @@
-import { removeImageInCloudinary } from "../services/image.service.js";
 import {
-  changeAvatarUser,
   findAllUsers,
+  findUserAvatar,
   findUserById,
   findUserByUsername,
+  findUsersLength,
   removeAvatarUser,
   removeUser,
   updateUserData,
+  userStatistics,
 } from "../services/user.service.js";
 import { responseError, responseSuccess } from "../utils/response.js";
 
@@ -31,6 +32,17 @@ export const getUserByUsername = async (req, res) => {
       });
     }
     responseSuccess(res, 200, "successfully get user data", user);
+  } catch (error) {
+    console.log("🚀 ~ getUserByUsername ~ error:", error);
+    responseError(res, 400, "failed to get user", error);
+  }
+};
+
+export const getAvatarUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const avatar = await findUserAvatar(id);
+    responseSuccess(res, 200, "successfully get avatar data", avatar);
   } catch (error) {
     console.log("🚀 ~ getUserByUsername ~ error:", error);
     responseError(res, 400, "failed to get user", error);
@@ -133,5 +145,33 @@ export const deleteUserById = async (req, res) => {
   } catch (error) {
     console.log("🚀 ~ deleteUserById ~ error:", error);
     responseError(res, 400, "failed to delete user", error);
+  }
+};
+
+export const getUsersLength = async (req, res) => {
+  try {
+    const users = await findUsersLength();
+    responseSuccess(res, 200, "successfully get user length data", users);
+  } catch (error) {
+    responseError(res, 400, "failed to get user length", error);
+  }
+};
+
+export const getUserStatistics = async (req, res) => {
+  try {
+    const usersCountPerDay = await userStatistics();
+    const statistic = usersCountPerDay.map(({ date, usercreated }) => ({
+      date: new Date(date).toLocaleDateString(),
+      user_created: parseInt(usercreated),
+    }));
+
+    responseSuccess(
+      res,
+      200,
+      "successfully get user statistic data",
+      statistic
+    );
+  } catch (error) {
+    responseError(res, 400, "failed to get user statistic", error);
   }
 };

@@ -8,6 +8,7 @@ import {
   getImageByUser,
   getImagesByAlbum,
   getImagesBySearch,
+  getImagesLength,
   getTrendingImages,
   getTrendingImagesByAlbum,
   updateImage,
@@ -17,6 +18,7 @@ import { authenticate } from "../middlewares/authenticate.js";
 
 const imageRouter = Router();
 
+imageRouter.get("/images-length", authenticate, getImagesLength);
 imageRouter.get("/image/", getAllImages);
 imageRouter.get("/image/user", getImageByUser);
 imageRouter.get("/image/search", getImagesBySearch);

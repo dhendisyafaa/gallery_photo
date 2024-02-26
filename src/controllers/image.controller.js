@@ -4,6 +4,7 @@ import {
   findImageByUser,
   findImagesByAlbum,
   findImagesBySearch,
+  findImagesLength,
   findTrendingImages,
   findTrendingImagesByAlbum,
   insertImage,
@@ -13,6 +14,16 @@ import {
   updateImageData,
 } from "../services/image.service.js";
 import { responseError, responseSuccess } from "../utils/response.js";
+
+export const getImagesLength = async (req, res) => {
+  try {
+    const images = await findImagesLength();
+    responseSuccess(res, 200, "successfully get image length data", images);
+  } catch (error) {
+    console.log("🚀 ~ getAllImages ~ error:", error);
+    responseError(res, 400, "failed to get all image length", error);
+  }
+};
 
 export const getAllImages = async (req, res) => {
   try {
