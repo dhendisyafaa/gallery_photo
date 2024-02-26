@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "postinstall": "prisma generate",
     "test": "npx jest --detectOpenHandles"
   },
   "prisma": {
