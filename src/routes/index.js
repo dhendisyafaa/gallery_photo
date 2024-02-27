@@ -19,4 +19,10 @@ router.use("/api", likeRouter);
 router.use("/api", reportRouter);
 router.use("/api", responseReportRoute);
 
+router.get("/api", (req, res) => {
+  res.status(200).json({
+    message: "Radsnaps API",
+  });
+});
+
 export default router;
