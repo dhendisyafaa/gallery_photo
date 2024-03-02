@@ -26,7 +26,6 @@ export const registerUser = async (req, res) => {
     const user = await register(dataUser);
     responseSuccess(res, 200, "successfully register a user account", user);
   } catch (error) {
-    console.log("🚀 ~ registerUser ~ error:", error);
     responseError(res, 400, "failed to register a user account", error);
   }
 };
@@ -68,7 +67,6 @@ export const loginUser = async (req, res) => {
     };
     responseSuccess(res, 200, "successfully login", data);
   } catch (error) {
-    console.log("🚀 ~ loginUser ~ error:", error);
     responseError(res, 400, "failed login", error);
   }
 };
@@ -95,7 +93,6 @@ export const loginWithGoogle = async (req, res) => {
 
     responseSuccess(res, 200, "successfully login", data);
   } catch (error) {
-    console.log("🚀 ~ loginUser ~ error:", error);
     responseError(res, 400, "failed login", error);
   }
 };

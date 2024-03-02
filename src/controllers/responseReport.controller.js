@@ -50,7 +50,6 @@ export const createResponseReport = async (req, res) => {
     await insertResponseReport(data);
     responseSuccess(res, 201, "successfully create response report issue");
   } catch (error) {
-    console.log("🚀 ~ createResponseReport ~ error:", error);
     responseError(res, 400, `failed to generate response report issue`, error);
   }
 };

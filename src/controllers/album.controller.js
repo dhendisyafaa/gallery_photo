@@ -51,7 +51,6 @@ export const getAlbumById = async (req, res) => {
     }
     responseSuccess(res, 200, "successfully get album data", album);
   } catch (error) {
-    console.log("🚀 ~ getAlbumById ~ error:", error);
     responseError(res, 400, "failed to get album", error);
   }
 };
@@ -67,28 +66,15 @@ export const getAlbumByUser = async (req, res) => {
       album
     );
   } catch (error) {
-    console.log("🚀 ~ getAlbumByUser ~ error:", error);
     responseError(res, 400, `failed to get album user`, error);
   }
 };
 
 export const createAlbum = async (req, res) => {
   try {
-    const { tags } = req.body;
-    const tagsArray = tags.split(", ");
-
-    const dataAlbum = {
-      body: {
-        ...req.body,
-        tags: tagsArray,
-      },
-      file: req.file,
-    };
-
-    await insertAlbum(dataAlbum);
+    await insertAlbum(req.body);
     responseSuccess(res, 201, "successfully create album data");
   } catch (error) {
-    console.log("🚀 ~ createAlbum ~ error:", error);
     responseError(res, 400, "failed to create album", error);
   }
 };
@@ -113,7 +99,6 @@ export const updateAlbum = async (req, res) => {
     });
     responseSuccess(res, 200, "successfully update album data", album);
   } catch (error) {
-    console.log("🚀 ~ updateAlbum ~ error:", error);
     responseError(res, 400, "failed to update album", error);
   }
 };

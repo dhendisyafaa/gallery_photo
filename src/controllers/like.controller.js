@@ -26,7 +26,6 @@ export const getLikeByUser = async (req, res) => {
       likes
     );
   } catch (error) {
-    console.log("🚀 ~ getLikeByUser ~ error:", error);
     responseError(res, 400, "failed to get like", error);
   }
 };
@@ -53,7 +52,6 @@ export const createLike = async (req, res) => {
     await insertLike(dataLike);
     responseSuccess(res, 201, "successfully create like data");
   } catch (error) {
-    console.log("🚀 ~ createLike ~ error:", error);
     responseError(res, 400, "failed to create like", error);
   }
 };

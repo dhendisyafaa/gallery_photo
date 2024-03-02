@@ -21,7 +21,7 @@ userRouter.get("/user", authenticate, getAllUsers);
 userRouter.get("/user/:id", getUserById);
 userRouter.get("/user/username/:username", getUserByUsername);
 userRouter.get("/user/avatar/:id", authenticate, getAvatarUser);
-userRouter.post("/user/avatar/:id", authenticate, updateAvatarUser);
+userRouter.patch("/user/avatar/:id", authenticate, updateAvatarUser);
 userRouter.delete("/user/avatar/:id", authenticate, deleteAvatarUser);
 userRouter.patch("/user/:id", authenticate, updateUser);
 userRouter.delete("/user/:id", authenticate, deleteUserById);

@@ -67,22 +67,24 @@ export const findAlbumByUser = async (id) => {
 };
 
 export const insertAlbum = async (data) => {
-  const { album_name, description, owner_id, tags } = data.body;
-
-  let upload;
-
-  if (data.file) {
-    upload = await uploadImageToCloudinary(data.file, "radsnaps/cover_album");
-  }
+  const {
+    album_name,
+    description,
+    owner_id,
+    tags,
+    album_cover,
+    cloudinary_id,
+  } = data;
+  const tagsArray = tags.split(", ");
 
   return await prisma.album.create({
     data: {
       album_name,
       description,
       owner_id,
-      tags,
-      album_cover: upload?.secure_url || "",
-      cloudinary_id: upload?.public_id || "",
+      tags: tagsArray,
+      album_cover,
+      cloudinary_id,
     },
   });
 };

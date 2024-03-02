@@ -1,4 +1,6 @@
+import { removeImageInCloudinary } from "../services/image.service.js";
 import {
+  changeAvatarUser,
   findAllUsers,
   findUserAvatar,
   findUserById,
@@ -33,7 +35,6 @@ export const getUserByUsername = async (req, res) => {
     }
     responseSuccess(res, 200, "successfully get user data", user);
   } catch (error) {
-    console.log("🚀 ~ getUserByUsername ~ error:", error);
     responseError(res, 400, "failed to get user", error);
   }
 };
@@ -44,7 +45,6 @@ export const getAvatarUser = async (req, res) => {
     const avatar = await findUserAvatar(id);
     responseSuccess(res, 200, "successfully get avatar data", avatar);
   } catch (error) {
-    console.log("🚀 ~ getUserByUsername ~ error:", error);
     responseError(res, 400, "failed to get user", error);
   }
 };
@@ -67,24 +67,23 @@ export const getUserById = async (req, res) => {
 };
 
 export const updateAvatarUser = async (req, res) => {
-  console.log("req.file", req.file);
-  // try {
-  //   const { id } = req.params;
-  //   const user = await findUserById(id);
-  //   if (!user) {
-  //     return res.status(404).json({
-  //       message: `user with id ${id} not found`,
-  //       data: null,
-  //     });
-  //   }
-  //   if (user.avatar !== null || user.cloudinary_id !== null)
-  //     await removeImageInCloudinary(user.cloudinary_id);
-  //   await changeAvatarUser(id, req.file);
-  //   responseSuccess(res, 200, "successfully add avatar user");
-  // } catch (error) {
-  //   console.log("🚀 ~ updateAvatarUser ~ error:", error);
-  //   responseError(res, 400, "failed to add avatar user", error);
-  // }
+  try {
+    const { id } = req.params;
+    const user = await findUserById(id);
+    if (!user) {
+      return res.status(404).json({
+        message: `user with id ${id} not found`,
+        data: null,
+      });
+    }
+    await changeAvatarUser(id, req.body);
+    if (user.cloudinary_id) {
+      await removeImageInCloudinary(user.cloudinary_id);
+    }
+    responseSuccess(res, 200, "successfully add avatar user");
+  } catch (error) {
+    responseError(res, 400, "failed to add avatar user", error);
+  }
 };
 
 export const deleteAvatarUser = async (req, res) => {
@@ -143,7 +142,6 @@ export const deleteUserById = async (req, res) => {
     await removeUser(id);
     responseSuccess(res, 200, "successfully delete user data");
   } catch (error) {
-    console.log("🚀 ~ deleteUserById ~ error:", error);
     responseError(res, 400, "failed to delete user", error);
   }
 };
