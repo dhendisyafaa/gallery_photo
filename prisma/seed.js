@@ -26,8 +26,8 @@ async function main() {
       description: "Newest",
       owner_id: admin.id,
       album_cover:
-        "https://res.cloudinary.com/dzr7oxnow/image/upload/v1707058680/radsnaps/cover_album/elc7rdkseyz7bxvadwgm.jpg",
-      cloudinary_id: "radsnaps/cover_album/elc7rdkseyz7bxvadwgm",
+        "https://res.cloudinary.com/dzr7oxnow/image/upload/v1709374002/radsnaps/cover_album/newest-album_tp5e3k.jpg",
+      cloudinary_id: "radsnaps/cover_album/newest-album_tp5e3k",
       tags: ["latest photo", "latest"],
     },
   });
