@@ -67,14 +67,9 @@ export const findUserAvatar = async (id) => {
   });
 };
 
-export const changeAvatarUser = async (id, file) => {
-  const upload = await uploadImageToCloudinary(file, "radsnaps/avatar");
-
+export const changeAvatarUser = async (id, data) => {
   return await prisma.user.update({
-    data: {
-      avatar: upload.secure_url,
-      cloudinary_id: upload.public_id,
-    },
+    data,
     where: {
       id,
     },

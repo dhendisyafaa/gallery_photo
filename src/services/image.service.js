@@ -190,28 +190,43 @@ export const findImageById = async (id) => {
 };
 
 export const insertImage = async (data) => {
-  const { image_description, image_title, album_id, owner_id, tags } =
-    data.body;
+  const {
+    cloudinary_id,
+    image_url,
+    image_name,
+    image_description,
+    image_title,
+    width,
+    height,
+    format,
+    resource_type,
+    created_at,
+    tags,
+    bytes,
+    folder,
+    original_filename,
+    album_id,
+    owner_id,
+  } = data;
 
-  const upload = await uploadImageToCloudinary(data.file, "radsnaps/images");
   const tagsArray = tags.split(", ");
 
   return await prisma.image.create({
     data: {
-      cloudinary_id: upload.public_id,
-      image_url: upload.secure_url,
-      image_name: data.file.filename,
+      cloudinary_id,
+      image_url,
+      image_name,
       image_description,
       image_title,
-      width: parseInt(upload.width),
-      height: parseInt(upload.height),
-      format: upload.format,
-      resource_type: upload.resource_type,
-      created_at: upload.created_at,
+      width: parseInt(width),
+      height: parseInt(height),
+      format,
+      resource_type,
+      created_at,
       tags: tagsArray,
-      bytes: parseInt(upload.bytes),
-      folder: upload.folder,
-      original_filename: upload.original_filename,
+      bytes: parseInt(bytes),
+      folder,
+      original_filename,
       albums: {
         create: {
           album_id: parseInt(album_id),
