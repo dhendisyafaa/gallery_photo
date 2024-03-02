@@ -11,6 +11,7 @@ import {
   insertImageToAlbum,
   removeImage,
   removeImageInAlbum,
+  removeImageInCloudinary,
   updateImageData,
 } from "../services/image.service.js";
 import { responseError, responseSuccess } from "../utils/response.js";
@@ -20,7 +21,6 @@ export const getImagesLength = async (req, res) => {
     const images = await findImagesLength();
     responseSuccess(res, 200, "successfully get image length data", images);
   } catch (error) {
-    console.log("🚀 ~ getAllImages ~ error:", error);
     responseError(res, 400, "failed to get all image length", error);
   }
 };
@@ -31,7 +31,6 @@ export const getAllImages = async (req, res) => {
     const images = await findAllImages(query.filter);
     responseSuccess(res, 200, "successfully get image data", images);
   } catch (error) {
-    console.log("🚀 ~ getAllImages ~ error:", error);
     responseError(res, 400, "failed to get all image", error);
   }
 };
@@ -41,7 +40,6 @@ export const getTrendingImages = async (req, res) => {
     const images = await findTrendingImages();
     responseSuccess(res, 200, "successfully get image data", images);
   } catch (error) {
-    console.log("🚀 ~ getTrendingImages ~ error:", error);
     responseError(res, 400, "failed to get all image trending", error);
   }
 };
@@ -84,7 +82,6 @@ export const getImageByUser = async (req, res) => {
     }
     responseSuccess(res, 200, "successfully get image data", image);
   } catch (error) {
-    console.log("🚀 ~ getImageByUser ~ error:", error);
     responseError(res, 400, `failed to get image user`, error);
   }
 };
@@ -102,22 +99,15 @@ export const getImageById = async (req, res) => {
     }
     responseSuccess(res, 200, "successfully get image data", image);
   } catch (error) {
-    console.log("🚀 ~ getImageById ~ error:", error);
     responseError(res, 400, "failed to get detail image", error);
   }
 };
 
 export const uploadImage = async (req, res) => {
   try {
-    const dataImage = {
-      body: req.body,
-      file: req.file,
-    };
-
-    const uploadedImage = await insertImage(dataImage);
+    const uploadedImage = await insertImage(req.body);
     responseSuccess(res, 201, "successfully post image data", uploadedImage);
   } catch (error) {
-    console.log("🚀 ~ uploadImage ~ error:", error);
     responseError(res, 400, "failed to post image", error);
   }
 };
@@ -134,7 +124,6 @@ export const addImageToAlbum = async (req, res) => {
     await insertImageToAlbum(dataImageToAlbum);
     responseSuccess(res, 201, "successfully post image data");
   } catch (error) {
-    console.log("🚀 ~ uploadImage ~ error:", error);
     responseError(res, 400, "failed to post image", error);
   }
 };
@@ -151,7 +140,6 @@ export const deleteImageInAlbum = async (req, res) => {
     await removeImageInAlbum(dataImageAlbum);
     responseSuccess(res, 201, "successfully delete image in album");
   } catch (error) {
-    console.log("🚀 ~ uploadImage ~ error:", error);
     responseError(res, 400, "failed to delete image in album", error);
   }
 };
@@ -193,9 +181,9 @@ export const deleteImageById = async (req, res) => {
       });
     }
     await removeImage(parseInt(id));
+    await removeImageInCloudinary(image.cloudinary_id);
     responseSuccess(res, 200, "successfully delete image data");
   } catch (error) {
-    console.log("🚀 ~ deleteImageById ~ error:", error);
     responseError(res, 400, "failed to delete image", error);
   }
 };

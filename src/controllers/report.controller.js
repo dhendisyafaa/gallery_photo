@@ -34,7 +34,6 @@ export const createReportIssue = async (req, res) => {
     await generateReportIssue(req.body);
     responseSuccess(res, 201, "successfully generate report issue");
   } catch (error) {
-    console.log("🚀 ~ createReportIssue ~ error:", error);
     responseError(res, 400, `failed to generate report issue`, error);
   }
 };
