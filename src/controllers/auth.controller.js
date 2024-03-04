@@ -64,6 +64,7 @@ export const loginUser = async (req, res) => {
     const data = {
       accessToken,
       refreshToken,
+      role: user.role,
     };
     responseSuccess(res, 200, "successfully login", data);
   } catch (error) {
