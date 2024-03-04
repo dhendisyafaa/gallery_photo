@@ -35,7 +35,7 @@ export const findAllImages = async (filter) => {
   // return likeImageLength(images);
 };
 
-export const findTrendingImages = async (id) => {
+export const findTrendingImages = async () => {
   const trendingImages = await prisma.image.findMany({
     take: 10,
     include: {
